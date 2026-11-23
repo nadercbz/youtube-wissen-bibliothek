@@ -13,6 +13,9 @@ Der Agent speichert das gesamte Wissen aus YouTube Videos als "Bücher" (ein Buc
 Port 8125: `python3 -m http.server 8125 -d bibliothek`, dann http://localhost:8125. Ein Buch direkt: `#<buch-id>`.
 Ohne Server geht es auch per Doppelklick auf `bibliothek/index.html`.
 
+## Online
+Repo `nadercbz/youtube-wissen-bibliothek` (öffentlich), Online Bibliothek: https://nadercbz.github.io/youtube-wissen-bibliothek/ . Nach jedem neuen Video committen und pushen. Transkripte, Untertitel, meta.json bleiben lokal (.gitignore).
+
 ## Regeln
 - Ablauf für neue Videos steht in `Agents/19_Youtube Wissen Agent/AGENT.md`.
 - Alles ist Wiedergabe des Videos, keine geprüften Fakten. Strittige oder unbelegte Aussagen bekommen ein Feld `einordnung`.
