@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Youtube Wissen Bibliothek</title>
+<style>
+  :root{--ink:#000;--paper:#fff;--blue:#0000ee;--grey:#e6e6e6;--mid:#888;--red:#e3001b}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#000;color:#fff;font:11px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif}
+  a{color:inherit}
+  .wrap{display:flex;gap:0;min-height:100vh;padding:28px 24px}
+  aside{width:200px;flex:0 0 200px;padding:8px 12px 40px 0;position:sticky;top:28px;align-self:flex-start;max-height:calc(100vh - 56px);overflow:auto}
+  aside h2{font-size:12px;font-weight:400;margin:22px 0 7px}
+  aside h2:first-child{margin-top:0}
+  .brand{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#bbb;margin-bottom:18px;line-height:1.5}
+  .brand b{color:#fff;display:block;font-size:12px;letter-spacing:.02em}
+  #q{width:100%;border:0;padding:5px 6px;font:inherit;font-size:11px;color:#000;background:#fff;outline:none}
+  #q::placeholder{color:#999}
+  .chips{display:flex;flex-wrap:wrap;gap:4px}
+  .chip{border:0;background:#fff;color:#000;font:inherit;font-size:9.5px;padding:3px 5px;cursor:pointer;line-height:1.2;text-align:left}
+  .chip.big{font-size:10.5px}
+  .chip.coll{background:var(--blue);color:#fff}
+  .chip.on{outline:2px solid var(--red);outline-offset:-2px}
+  .chip.coll.on{background:#fff;color:var(--blue)}
+  .reset{margin-top:16px;background:none;border:1px solid #555;color:#bbb;font:inherit;font-size:10px;padding:3px 6px;cursor:pointer}
+  main{flex:1;min-width:0;background:#fff;color:#000;padding:22px 16px 40px;align-self:flex-start;min-height:calc(100vh - 56px)}
+  .bar{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:10px;text-transform:uppercase;margin:0 4px 14px;color:#444;flex-wrap:wrap}
+  .bar b{color:#000}
+  .vinfo{margin:0 4px 18px;padding:10px 12px;background:var(--grey);font-size:11px;display:none}
+  .vinfo.on{display:block}
+  .vinfo h3{margin:0 0 4px;font-size:13px}
+  .vinfo p{margin:4px 0;max-width:80ch}
+  .vinfo .warn{color:#7a0000}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:26px 16px;align-items:start}
+  .card{font-size:10px;text-transform:uppercase}
+  .cov{display:block;width:100%;aspect-ratio:3/4;background:#ddd;cursor:pointer;border:0;padding:0}
+  .cov svg{display:block;width:100%;height:100%}
+  .meta{margin-top:5px}
+  .meta .nr{font-weight:700}
+  .meta .lk{cursor:pointer;margin-left:3px;text-decoration:none}
+  .meta .lk:hover{text-decoration:underline}
+  .card ul{margin:8px 0 0 13px;padding:0}
+  .card .tg{margin-top:6px;letter-spacing:.01em}
+  .card .tt{font-weight:700;font-size:10.5px;margin-top:5px;text-transform:none}
+  .row{display:flex;gap:4px;margin-top:8px;text-transform:none}
+  .row span{background:var(--grey);padding:3px 5px;font-size:10px}
+  .row button{background:var(--grey);border:0;font:inherit;font-size:10px;padding:3px 7px;cursor:pointer}
+  .row button:hover{background:#000;color:#fff}
+  .empty{padding:60px 8px;text-transform:uppercase;color:#888}
+  /* Leser */
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;z-index:10;overflow:auto;padding:28px 24px}
+  .ov.on{display:block}
+  .reader{background:#fff;color:#000;max-width:1080px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;gap:28px;padding:24px;position:relative}
+  .reader .cv svg{width:100%;display:block}
+  .reader .cv .small{font-size:10px;text-transform:uppercase;margin-top:8px;line-height:1.6}
+  .x{position:absolute;top:10px;right:12px;background:#000;color:#fff;border:0;font:inherit;font-size:11px;padding:4px 8px;cursor:pointer}
+  .reader h1{font-size:30px;line-height:1.05;margin:0 0 6px;letter-spacing:-.01em}
+  .reader .sub{font-size:14px;margin:0 0 14px}
+  .reader h4{font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin:20px 0 6px;border-top:1px solid #000;padding-top:6px}
+  .reader p{font-size:13px;line-height:1.55;max-width:70ch;margin:0}
+  .reader ol{margin:0;padding-left:20px;font-size:13px;line-height:1.5;max-width:72ch}
+  .reader ol li{margin-bottom:5px}
+  .reader blockquote{margin:0 0 8px;font-size:15px;line-height:1.4;max-width:62ch}
+  .reader blockquote a{font-size:10px;background:var(--blue);color:#fff;text-decoration:none;padding:2px 4px;margin-right:6px;vertical-align:2px}
+  .src{font-size:11px;text-transform:uppercase}
+  .src a{background:var(--blue);color:#fff;text-decoration:none;padding:2px 5px}
+  .einordnung{background:#fff3c4;border-left:4px solid #000;padding:10px 12px;font-size:12px;line-height:1.5;max-width:72ch;margin-top:6px}
+  .reader .chips .chip{background:var(--grey)}
+  .nav{display:flex;gap:6px;margin-top:22px}
+  .nav button{background:#000;color:#fff;border:0;font:inherit;font-size:10px;padding:5px 9px;cursor:pointer;text-transform:uppercase}
+  .bigview{position:fixed;inset:0;background:#000;display:none;z-index:20;align-items:center;justify-content:center;cursor:zoom-out;padding:24px}
+  .bigview.on{display:flex}
+  .bigview svg{height:100%;max-height:92vh;width:auto;max-width:100%}
+  @media (max-width:760px){
+    .wrap{display:block;padding:16px}
+    aside{width:auto;position:static;max-height:none;padding:0 0 18px}
+    main{padding:16px 12px}
+    .grid{grid-template-columns:repeat(2,1fr);gap:20px 12px}
+    .reader{grid-template-columns:1fr;padding:16px}
+    .reader .cv{max-width:240px}
+    .ov{padding:12px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <div class="brand"><b>Youtube Wissen</b>Bibliothek des Youtube Wissen Agent</div>
+    <h2>Search</h2>
+    <input id="q" type="search" placeholder="What are you looking for?" autocomplete="off">
+    <h2>Categories</h2>
+    <div class="chips" id="cats"></div>
+    <h2>Collections</h2>
+    <div class="chips" id="colls"></div>
+    <h2>Tags</h2>
+    <div class="chips" id="tags"></div>
+    <button class="reset" id="reset">Filter zurücksetzen</button>
+  </aside>
+  <main>
+    <div class="bar"><div id="count"></div><div>Sortierung: Nummer · <span id="stand"></span></div></div>
+    <div class="vinfo" id="vinfo"></div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+<div class="ov" id="ov"><div class="reader" id="reader"></div></div>
+<div class="bigview" id="big"></div>
+
+<script src="data/bibliothek.js"></script>
+<script>
+const B = window.BIBLIOTHEK || {videos:[],buecher:[]};
+const VID = Object.fromEntries(B.videos.map(v=>[v.id,v]));
+const S = {q:"", cat:null, coll:null, tag:null};
+const $ = id => document.getElementById(id);
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad = n => String(n).padStart(4,"0");
+
+/* ---------- Cover Generator (deterministisch je Buch) ---------- */
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){let a=seed;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function wrap(txt,max){const w=txt.split(/\s+/),l=[];let cur="";for(const x of w){if((cur+" "+x).trim().length>max){if(cur)l.push(cur);cur=x}else cur=(cur+" "+x).trim()}if(cur)l.push(cur);return l}
+function lines(arr,x,y,size,lh,attrs=""){return arr.map((t,i)=>`<text x="${x}" y="${y+i*lh}" font-size="${size}" ${attrs}>${esc(t)}</text>`).join("")}
+const FONT = `font-family="Helvetica Neue,Helvetica,Arial,sans-serif"`;
+const MONO = `font-family="Menlo,Courier New,monospace"`;
+const STILE = ["buchstabe","figur","raster","streifen","kreis","terminal","bogen"];
+
+function cover(b){
+  const r = rng(hash(b.id)), W=300, H=400;
+  const stil = b.cover?.stil || STILE[(b.nr-1)%STILE.length];
+  const T = b.titel.toUpperCase(), nr = pad(b.nr);
+  let s = "";
+  if(stil==="buchstabe"){
+    const L=[...T.replace(/[^A-ZÄÖÜ0-9]/g,"")][0]||"W";
+    s=`<rect width="${W}" height="${H}" fill="#f2f2f0"/>
+      <text x="${150+(r()-.5)*60}" y="${360}" font-size="420" font-weight="700" ${FONT} fill="#000" text-anchor="middle" letter-spacing="-20">${esc(L)}</text>
+      <rect x="0" y="0" width="${W}" height="70" fill="#f2f2f0"/>
+      ${lines(wrap(T,22),18,30,15,17,`${FONT} font-weight="700" fill="#000"`)}
+      <text x="282" y="388" font-size="9" ${MONO} text-anchor="end" fill="#000">${nr}</text>`;
+  } else if(stil==="figur"){
+    const n=7,c=26,ox=(W-n*c)/2,oy=90;let g="";
+    for(let y=0;y<9;y++)for(let x=0;x<4;x++){if(r()>.45){const xs=[x,n-1-x];for(const xx of new Set(xs))g+=`<rect x="${ox+xx*c}" y="${oy+y*c}" width="${c}" height="${c}" fill="#111"/>`}}
+    s=`<rect width="${W}" height="${H}" fill="#d9d9d6"/>${g}
+      ${lines(wrap(T,24),18,34,14,16,`${FONT} font-weight="700" fill="#111"`)}
+      <text x="18" y="384" font-size="9" ${MONO} fill="#111">${nr} / ${esc(b.kategorie.toUpperCase())}</text>`;
+  } else if(stil==="raster"){
+    const words=(b.tags.join(" ")+" "+T).toUpperCase().split(/\s+/);let g="",k=0;
+    for(let y=0;y<8;y++)for(let x=0;x<3;x++){const w=words[k++%words.length];g+=`<text x="${18+x*94}" y="${120+y*30}" font-size="${15+r()*5|0}" font-weight="700" ${FONT} fill="#fff">${esc(w.slice(0,6))}</text>`}
+    s=`<rect width="${W}" height="${H}" fill="#000"/>${g}
+      <rect x="0" y="0" width="${W}" height="78" fill="#000"/>
+      ${lines(wrap(T,20),18,32,17,19,`${FONT} font-weight="700" fill="#fff"`)}
+      <rect x="${W/2-2}" y="140" width="4" height="200" fill="#fff"/>
+      <text x="282" y="388" font-size="9" ${MONO} text-anchor="end" fill="#fff">${nr}</text>`;
+  } else if(stil==="streifen"){
+    let g="",y=80;while(y<370){const h=6+r()*22,w=60+r()*200;g+=`<rect x="${W-20-w}" y="${y}" width="${w}" height="${h}" fill="#000"/>`;y+=h+r()*6}
+    s=`<rect width="${W}" height="${H}" fill="#fff"/>${g}
+      ${lines(wrap(T,22),18,30,15,17,`${FONT} font-weight="700" fill="#000"`)}
+      <text x="18" y="388" font-size="9" ${MONO} fill="#000">${nr}</text>`;
+  } else if(stil==="kreis"){
+    const cx=150+(r()-.5)*40, cy=225, rad=95+r()*25;
+    s=`<rect width="${W}" height="${H}" fill="#fff"/>
+      <circle cx="${cx}" cy="${cy}" r="${rad}" fill="#000"/>
+      <circle cx="${cx+rad*.35}" cy="${cy-rad*.2}" r="${rad*.32}" fill="#fff"/>
+      <text x="${cx+rad*.35}" y="${cy-rad*.2+16}" font-size="44" font-weight="700" ${FONT} text-anchor="middle" fill="#000">${esc([...T][0])}</text>
+      ${lines(wrap(T,22),18,30,15,17,`${FONT} font-weight="700" fill="#000"`)}
+      <text x="18" y="388" font-size="9" ${MONO} fill="#000">${nr} · ${esc(b.untertitel.toUpperCase().slice(0,34))}</text>`;
+  } else if(stil==="terminal"){
+    const src=(b.kernaussagen||[]).join(" ").toUpperCase().split(/\s+/);let g="",k=0;
+    for(let y=0;y<15;y++){let line="";while(line.length<30)line+=src[k++%src.length]+" ";g+=`<text x="18" y="${112+y*17}" font-size="11" ${MONO} fill="#9fb4ff">${esc(line.slice(0,30))}</text>`}
+    s=`<rect width="${W}" height="${H}" fill="#0a14d8"/>
+      <text x="18" y="30" font-size="11" ${MONO} fill="#fff">==== ${nr} ====</text>
+      ${lines(wrap(T,20),18,56,17,19,`${MONO} font-weight="700" fill="#fff"`)}${g}
+      <rect x="18" y="372" width="140" height="12" fill="#fff"/>
+      <text x="22" y="381" font-size="9" ${MONO} fill="#0a14d8">${esc(b.kategorie.toUpperCase())}</text>`;
+  } else { /* bogen */
+    s=`<rect width="${W}" height="${H}" fill="#f4f2ee"/>
+      <path d="M -20 ${250+r()*30} Q 150 ${150+r()*40} 330 ${230+r()*40} L 330 ${275+r()*20} Q 150 ${200+r()*30} -20 ${300+r()*20} Z" fill="${["#e3001b","#0a14d8","#111"][hash(b.id)%3]}"/>
+      ${lines(wrap(T,13),18,58,32,32,`${FONT} font-weight="700" fill="#111"`)}
+      <text x="18" y="360" font-size="12" ${FONT} fill="#111">${esc(b.untertitel)}</text>
+      <text x="18" y="384" font-size="9" ${MONO} fill="#111">${nr}</text>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cover ${esc(b.titel)}">${s}</svg>`;
+}
+
+/* ---------- Filter ---------- */
+function text(b){return [b.titel,b.untertitel,b.kategorie,b.zusammenfassung,...(b.kernaussagen||[]),...(b.tags||[]),...(b.personen||[]),...(b.zitate||[]).map(z=>z.text),b.einordnung].join(" ").toLowerCase()}
+function filtered(){
+  const q=S.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return B.buecher.filter(b=>(!S.cat||b.kategorie===S.cat)&&(!S.coll||b.video===S.coll)&&(!S.tag||b.tags.includes(S.tag))&&q.every(w=>text(b).includes(w)));
+}
+function counts(key){const m={};for(const b of B.buecher){const vals=key==="tags"?b.tags:[b[key]];for(const v of vals)m[v]=(m[v]||0)+1}return m}
+
+function renderSide(){
+  const cats=counts("kategorie");
+  $("cats").innerHTML=Object.entries(cats).sort().map(([k,n])=>`<button class="chip big ${S.cat===k?"on":""}" data-cat="${esc(k)}">${esc(k)} (${n})</button>`).join("");
+  $("colls").innerHTML=B.videos.map(v=>`<button class="chip coll ${S.coll===v.id?"on":""}" data-coll="${v.id}">${esc(v.sammlung||v.titel)}</button>`).join("");
+  const tags=counts("tags");
+  $("tags").innerHTML=Object.entries(tags).sort((a,b)=>a[0].localeCompare(b[0],"de")).map(([k,n])=>`<button class="chip ${n>1?"big":""} ${S.tag===k?"on":""}" data-tag="${esc(k)}">${esc(k)} (${n})</button>`).join("");
+}
+function renderGrid(){
+  const list=filtered();
+  $("count").innerHTML=`<b>${list.length}</b> von ${B.buecher.length} Büchern · ${B.videos.length} Video${B.videos.length===1?"":"s"}`;
+  const v=S.coll&&VID[S.coll];
+  $("vinfo").className="vinfo"+(v?" on":"");
+  if(v)$("vinfo").innerHTML=`<h3>${esc(v.titel)}</h3><p>${esc(v.kanal)} · Gast ${esc(v.gast)} · ${esc(v.dauer)} · <a href="${esc(v.url)}" target="_blank" rel="noopener">auf YouTube öffnen</a></p><p>${esc(v.beschreibung)}</p><p class="warn">${esc(v.hinweis||"")}</p>`;
+  $("grid").innerHTML=list.length?list.map(b=>`
+    <div class="card">
+      <button class="cov" data-open="${b.id}" aria-label="${esc(b.titel)} lesen">${cover(b)}</button>
+      <div class="meta"><span class="nr">${pad(b.nr)}</span><a class="lk" data-open="${b.id}">OPEN</a><a class="lk" data-big="${b.id}">ENLARGE</a></div>
+      <div class="tt">${esc(b.titel)}</div>
+      <ul><li>${esc(b.kategorie)}</li></ul>
+      <div class="tg">TAGS: ${esc(b.tags.slice(0,4).join(", "))}</div>
+      <div class="row"><span>Kernaussagen (${b.kernaussagen.length})</span><button data-open="${b.id}">Lesen</button></div>
+      <div class="row"><span>${esc(b.zeit||"")}</span><button data-coll="${b.video}">Video</button></div>
+    </div>`).join(""):`<div class="empty">Nichts gefunden.</div>`;
+}
+function ytLink(v,t){if(!t)return v.url;const [h,m,s]=t.split(":").map(Number);return `https://www.youtube.com/watch?v=${v.id}&t=${h*3600+m*60+s}s`}
+
+function openBook(id){
+  const list=filtered(),i=list.findIndex(b=>b.id===id),b=B.buecher.find(x=>x.id===id),v=VID[b.video];
+  $("reader").innerHTML=`
+    <button class="x" data-close>SCHLIESSEN ✕</button>
+    <div class="cv"><div data-big="${b.id}" style="cursor:zoom-in">${cover(b)}</div>
+      <div class="small"><b>${pad(b.nr)}</b> · ${esc(b.kategorie)}<br>Quelle: ${esc(v.kanal)}<br>Gast: ${esc(v.gast)}</div></div>
+    <div>
+      <h1>${esc(b.titel)}</h1><p class="sub">${esc(b.untertitel)}</p>
+      <div class="src"><a href="${ytLink(v,b.zeit)}" target="_blank" rel="noopener">▶ ab ${esc(b.zeit||"0:00:00")} ansehen</a> &nbsp;${esc(v.titel)}</div>
+      <h4>Zusammenfassung</h4><p>${esc(b.zusammenfassung)}</p>
+      <h4>Kernaussagen</h4><ol>${b.kernaussagen.map(k=>`<li>${esc(k)}</li>`).join("")}</ol>
+      ${b.zitate?.length?`<h4>Zitate</h4>${b.zitate.map(z=>`<blockquote><a href="${ytLink(v,z.t)}" target="_blank" rel="noopener">${esc(z.t)}</a>„${esc(z.text)}“</blockquote>`).join("")}`:""}
+      ${b.einordnung?`<h4>Einordnung</h4><div class="einordnung">${esc(b.einordnung)}</div>`:""}
+      ${b.personen?.length?`<h4>Personen</h4><p>${esc(b.personen.join(", "))}</p>`:""}
+      <h4>Stichwörter</h4><div class="chips">${b.tags.map(t=>`<button class="chip big" data-tag="${esc(t)}" data-close>${esc(t)}</button>`).join("")}</div>
+      <div class="nav">${i>0?`<button data-open="${list[i-1].id}">← ${esc(list[i-1].titel)}</button>`:""}${i>=0&&i<list.length-1?`<button data-open="${list[i+1].id}">${esc(list[i+1].titel)} →</button>`:""}</div>
+    </div>`;
+  $("ov").classList.add("on");$("ov").scrollTop=0;
+  history.replaceState(null,"","#"+id);
+}
+function close(){$("ov").classList.remove("on");history.replaceState(null,"",location.pathname)}
+function render(){renderSide();renderGrid()}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-open],[data-big],[data-cat],[data-coll],[data-tag],[data-close]");
+  if(e.target.id==="ov"){close();return}
+  if(e.target.closest("#big")){$("big").classList.remove("on");return}
+  if(!t)return;
+  if(t.dataset.big){$("big").innerHTML=cover(B.buecher.find(b=>b.id===t.dataset.big));$("big").classList.add("on");return}
+  if(t.dataset.open){openBook(t.dataset.open);return}
+  if(t.dataset.close!==undefined&&!t.dataset.tag){close();return}
+  if(t.dataset.cat)S.cat=S.cat===t.dataset.cat?null:t.dataset.cat;
+  if(t.dataset.coll){S.coll=S.coll===t.dataset.coll?null:t.dataset.coll;close()}
+  if(t.dataset.tag){S.tag=S.tag===t.dataset.tag?null:t.dataset.tag;close()}
+  render();window.scrollTo({top:0,behavior:"smooth"});
+});
+$("q").addEventListener("input",e=>{S.q=e.target.value;renderGrid()});
+$("reset").onclick=()=>{S.q="";S.cat=S.coll=S.tag=null;$("q").value="";render()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("big").classList.remove("on");close()}});
+$("stand").textContent="Stand "+(B.videos.map(v=>v.hinzugefuegt).sort().pop()||"");
+render();
+function fromHash(){const h=decodeURIComponent(location.hash.slice(1));if(h&&B.buecher.some(b=>b.id===h))openBook(h)}
+window.addEventListener("hashchange",fromHash);fromHash();
+</script>
+</body>
+</html>

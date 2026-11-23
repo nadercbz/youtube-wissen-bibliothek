@@ -1,0 +1,7 @@
+# Transkripte und Untertitel bleiben lokal (Urheberrecht)
+videos/*/transkript.txt
+videos/*/untertitel.vtt
+videos/*/meta.json
+.claude/
+.DS_Store
+__pycache__/
